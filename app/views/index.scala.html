@@ -1,0 +1,29 @@
+@()(implicit request: RequestHeader)
+
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <title>しりとり Game</title>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <div class="container">
+            <h1>しりとり Game</h1>
+            <div id="game-state">
+                <p>Current word: <span id="current-word"></p>
+                <p>Used words: <span id="used-words"></p>
+            </div>
+            <div id="game-input">
+                <input type="text" id="word-input" placeholder="Enter a Japanese word">
+                <button onclick="submitWord()">Submit</button>
+                <button onclick="resetGame()">Reset Game</button>
+            </div>
+            <div id="message"></div>
+        </div>
+        <script>
+            window.csrfToken = '@helper.CSRF.getToken.value';
+        </script>
+        <script src="@routes.Assets.versioned("javascripts/main.js")"></script>
+    </body>
+</html>
