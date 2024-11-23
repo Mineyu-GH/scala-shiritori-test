@@ -14,20 +14,20 @@ class ShiritoriController @Inject()(val controllerComponents: ControllerComponen
   private var game = Game.initialize
   
   implicit val gameWrites: Writes[Game] = Json.writes[Game]
-  
-  def index() = Action { implicit request: Request[AnyContent] =>
+
+  def index(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     Ok(views.html.index())
   }
-  
-  def getGameState() = Action { implicit request =>
+
+  def getGameState: Action[AnyContent] = Action { implicit request =>
     // Get CSRF token and include it in response
     val token = CSRF.getToken.map(_.value).getOrElse("")
     Ok(Json.toJson(game)).withHeaders("Csrf-Token" -> token)
   }
-  
-  def playWord() = Action(parse.json) { implicit request =>
+
+  def playWord(): Action[JsValue] = Action(parse.json) { implicit request =>
     val word = (request.body \ "word").as[String]
-    
+
     if (game.isValidMove(word)) {
       game = Game(
         currentWord = word,
@@ -39,9 +39,11 @@ class ShiritoriController @Inject()(val controllerComponents: ControllerComponen
       BadRequest(Json.obj("error" -> "Invalid move"))
     }
   }
-  
-  def resetGame() = Action { implicit request =>
+
+  def resetGame(): Action[AnyContent] = Action { implicit request =>
     game = Game.initialize
-    Ok(Json.toJson(game))
+    val jsonGame = Json.toJson(game)
+    //println(Json.prettyPrint(jsonGame))
+    Ok(jsonGame)
   }
 }
